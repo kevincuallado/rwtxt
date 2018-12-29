@@ -211,12 +211,12 @@ func (tr *TemplateRender) handleMain(w http.ResponseWriter, r *http.Request, mes
 	tr.DomainIsPrivate = !ispublic && (tr.Domain != "public" || tr.rwt.Config.Private)
 	tr.PrivateEnvironment = tr.rwt.Config.Private
 	tr.DomainExists = domainErr == nil
-	tr.Files, err = tr.rwt.fs.GetTopX(tr.Domain, 10, tr.RWTxtConfig.OrderByCreated)
+	tr.Files, err = tr.rwt.fs.GetTopX(tr.Domain, 10000, tr.RWTxtConfig.OrderByCreated)
 	if err != nil {
 		log.Debug(err)
 	}
 
-	tr.MostActiveList, _ = tr.rwt.fs.GetTopXMostViews(tr.Domain, 10)
+	// tr.MostActiveList, _ = tr.rwt.fs.GetTopXMostViews(tr.Domain, 10)
 	tr.Title = tr.Domain
 	tr.Message = message
 	tr.DomainValue = template.HTMLAttr(`value="` + tr.Domain + `"`)
