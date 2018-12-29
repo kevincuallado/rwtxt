@@ -24,7 +24,7 @@
 </div>
 {{ end }}
 <form id="dropzoneForm" action="/upload?domain={{.Domain}}" class="dropzone">
-<textarea class="fonty" id="editable" style="-webkit-user-select:text;{{if not .EditOnly}}display:none;{{end}}" rows={{ .Rows }} placeholder="Click here and start writing" autofocus>{{.File.Data}}</textarea>
+<textarea spellcheck="false" class="fonty" id="editable" style="-webkit-user-select:text;{{if not .EditOnly}}display:none;{{end}}" rows={{ .Rows }} placeholder="Click here and start writing" autofocus>{{.File.Data}}</textarea>
 </form>
 </div>
 <div id="snackbar">Write markdown, reload page when you are done!</div>
