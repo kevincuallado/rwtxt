@@ -1,7 +1,7 @@
 {{template "header" .}}
 <div class="main" class="fonty">
 	<div class="fr">
-		<a href='/{{.Domain}}/{{.RandomUUID}}' class='fr'>Write</a><br>
+		{{ if .SignedIn}}<a href='/{{.Domain}}/{{.RandomUUID}}' class='fr'>Write</a><br>{{end}}
 		Log <a onclick="document.getElementById('id01').style.display='block'">in</a>
 		{{ if gt (len .DomainList) 1 }}
 		 / <a href="/logout?d={{.Domain}}">out</a>
@@ -64,6 +64,8 @@
 				{{end}}
 			</ul>
 			{{end}}
+		{{else}}
+			Nothing to see here.
 		{{end}}
 
 
@@ -112,6 +114,19 @@
 </script>
 
 
-
-
+<!-- <script src="/static/js/quicklink.umd.js"></script>
+<script>
+	quicklink({ 
+		priority: true,
+		ignores: [
+			uri => uri.includes('{{.RandomUUID}}'),
+			uri => uri.includes('login'),
+			uri => uri.includes('logout'),
+			{{ range .DomainList }}
+			uri => uri.endsWith('/{{.}}'),
+			{{end}}
+			(uri, elem) => elem.hasAttribute('noprefetch')
+		]
+	});
+</script> -->
 {{template "footer" .}}
