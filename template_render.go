@@ -15,7 +15,6 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/disintegration/imaging"
@@ -445,17 +444,17 @@ func (tr *TemplateRender) handleViewEdit(w http.ResponseWriter, r *http.Request)
 	}
 
 	if pageID != "" {
-		var wg sync.WaitGroup
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			timerStart = time.Now()
-			tr.SimilarFiles, err = tr.rwt.fs.GetSimilar(pageID)
-			if err != nil {
-				log.Error(err)
-			}
-			log.Debugf("got %s similar in %s", tr.Page, time.Since(timerStart))
-		}()
+		// var wg sync.WaitGroup
+		// wg.Add(1)
+		// go func() {
+		// 	defer wg.Done()
+		// 	timerStart = time.Now()
+		// 	tr.SimilarFiles, err = tr.rwt.fs.GetSimilar(pageID)
+		// 	if err != nil {
+		// 		log.Error(err)
+		// 	}
+		// 	log.Debugf("got %s similar in %s", tr.Page, time.Since(timerStart))
+		// }()
 
 		var files []db.File
 		timerStart = time.Now()
@@ -470,7 +469,7 @@ func (tr *TemplateRender) handleViewEdit(w http.ResponseWriter, r *http.Request)
 			f = files[0]
 		}
 		log.Debugf("got %s content in %s", tr.Page, time.Since(timerStart))
-		wg.Wait()
+		// wg.Wait()
 	} else {
 		uuid := utils.UUID()
 		f = db.File{
