@@ -144,6 +144,18 @@ func (tr *TemplateRender) handleList(w http.ResponseWriter, r *http.Request, que
 	tr.Search = query
 	tr.RandomUUID = utils.UUID()
 
+	trJSON, _ := json.Marshal(tr.Files)
+	etag := utils.Hash("etag", string(trJSON))
+	log.Debugf("etag: '%s'", etag)
+	if match := r.Header.Get("If-None-Match"); match != "" {
+		log.Debugf("match: '%s'", etag)
+		if strings.Contains(match, etag) {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+	}
+	w.Header().Set("Etag", etag)
+	w.Header().Set("Cache-Control", "max-age=500") // 5 seconds
 	w.Header().Set("Content-Encoding", "gzip")
 	w.Header().Set("Content-Type", "text/html")
 	gz := gzip.NewWriter(w)
@@ -221,6 +233,18 @@ func (tr *TemplateRender) handleMain(w http.ResponseWriter, r *http.Request, mes
 	tr.Message = message
 	tr.DomainValue = template.HTMLAttr(`value="` + tr.Domain + `"`)
 
+	trJSON, _ := json.Marshal(tr.Files)
+	etag := utils.Hash("etag", string(trJSON))
+	log.Info(etag)
+	if match := r.Header.Get("If-None-Match"); match != "" {
+		log.Info(match)
+		if strings.Contains(match, etag) {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+	}
+	w.Header().Set("Etag", etag)
+	w.Header().Set("Cache-Control", "max-age=5") // 5 seconds
 	w.Header().Set("Content-Encoding", "gzip")
 	w.Header().Set("Content-Type", "text/html")
 	gz := gzip.NewWriter(w)
@@ -436,6 +460,17 @@ func (tr *TemplateRender) handleViewEdit(w http.ResponseWriter, r *http.Request)
 			log.Error(err)
 		} else {
 			log.Debug("using cache")
+			etag := utils.Hash("etag", string(tr.Rendered))
+			log.Debugf("etag: '%s'", etag)
+			if match := r.Header.Get("If-None-Match"); match != "" {
+				log.Debugf("match: '%s'", etag)
+				if strings.Contains(match, etag) {
+					w.WriteHeader(http.StatusNotModified)
+					return
+				}
+			}
+			w.Header().Set("Etag", etag)
+			w.Header().Set("Cache-Control", "max-age=500") // 5 seconds
 			w.Header().Set("Content-Encoding", "gzip")
 			w.Header().Set("Content-Type", "text/html")
 			gz := gzip.NewWriter(w)
@@ -552,6 +587,17 @@ func (tr *TemplateRender) handleViewEdit(w http.ResponseWriter, r *http.Request)
 		}
 	}()
 
+	etag := utils.Hash("etag", string(tr.Rendered))
+	log.Debugf("etag: '%s'", etag)
+	if match := r.Header.Get("If-None-Match"); match != "" {
+		log.Debugf("match: '%s'", etag)
+		if strings.Contains(match, etag) {
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+	}
+	w.Header().Set("Etag", etag)
+	w.Header().Set("Cache-Control", "max-age=500") // 5 seconds
 	w.Header().Set("Content-Encoding", "gzip")
 	w.Header().Set("Content-Type", "text/html")
 	gz := gzip.NewWriter(w)

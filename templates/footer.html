@@ -1,15 +1,16 @@
 {{define "footer"}}
 
-<script src="https://unpkg.com/quicklink@1.0.0/dist/quicklink.umd.js"></script>
+<script src="/static/js/quicklink.js"></script>
 <!-- Initialize (you can do this whenever you want) -->
 <script>
-quicklink({
-	priority: true,
-	ignores: [
-    		uri => uri.includes('/logout'),
-		uri => console.log(uri)
-  	]
-});
+	quicklink({
+		priority: true,
+		ignores: [
+			uri => uri.includes('/list'),
+			uri => uri.includes('/logout'),
+			uri => (uri.match(/\//g) || []).length < 4
+		]
+	});
 </script>
 </body>
 
